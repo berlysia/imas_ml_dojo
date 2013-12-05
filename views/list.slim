@@ -24,7 +24,8 @@
                   a href="http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojo.userid}/" target="#{@target}" バトルする
               - elsif k == 'home'
                 td rowspan='3' class="#{k}"
-                  a href="http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojo.userid}/" target="#{@target}" マイページ
+                  a href="http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojo.userid}/" target="#{@target}"
+                    = 'マイページ'
               - elsif k == 'comment'
                 td colspan='3' class="#{k}" = "#{dojo[k]}"
               - else

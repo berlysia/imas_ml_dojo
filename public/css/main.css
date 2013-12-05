@@ -10,6 +10,10 @@ li.round {
   border-bottom: 1px solid #ddd;
 }
 
+li.round:nth-child(even){
+  background: #eee;
+}
+
 li.round > a {
   display: block;
   color: inherit;
@@ -17,34 +21,48 @@ li.round > a {
 
 .round.level-display {
   display: block;
-  width: 96px;
-  height: 96px;
+  width: 128px;
+  height: 128px;
   text-align: center;
-  line-height: 96px;
-  font-size: 32px;
+  line-height: 128px;
+  font-size: 48px;
 }
 
 .round.name-display {
-
+  height: 36px;
+  line-height: 36px;
+  font-size: 20px;
 }
 
 .round.value-display {
-  height: 76px;
-  line-height: 76px;
+  height: 92px;
+  line-height: 92px;
   text-align: center;
-  font-size: 24px;
+  font-size: 32px;
 }
 
 .round.comment-display {
-  font-size: 16px
+  font-size: 18px
 }
 
-th {
+.list td.home, .list td.link, .list th.home, .list th.link {
+  width: 120px;
+  padding: 0;
+  height: 100%;
+  text-align: center;
   vertical-align: middle;
 }
 
-td.home, td.link, th.home, th.link {
-  width: 120px;
+.list td, .list th {
+  font-size: 1.2em;
+}
+
+.list td.home a, .list td.link a {
+  display: block;
+  height: 140px;
+  line-height: 140px;
+  width: 100%;
+  border: 1px solid black;
 }
 
 #content.about p{

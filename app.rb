@@ -51,8 +51,10 @@ get '/update' do
     dispvalue = []
     [@username, @unitname, @comment].each do |str|
       next if str.nil?
-      str.split(/\D/).map{|i| i.to_i}.sort[-1].tap{|i| i ? dispvalue<<i : nil}
-      NKF.nkf('-Wwxm0Z0',str).match(/([0-9,]+)(.[0-9]+)?k/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*1000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
+      foo = NKF.nkf('-Wwxm0Z0',str)
+      foo.split(/\D/).map{|i| i.to_i}.sort[-1].tap{|i| i ? dispvalue<<i : nil}
+      foo.match(/([0-9,]+)(.[0-9]+)?k/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*1000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
+      foo.match(/([0-9,]+)(.[0-9]+)?万/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*10000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
     end
 
     @dispvalue = params['dispvalue'] || dispvalue.max || ''

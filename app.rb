@@ -21,7 +21,7 @@ error 403 do
 end
 
 get '/' do
-  redirect '/list'
+  redirect '/round'
 end
 
 get '/about' do

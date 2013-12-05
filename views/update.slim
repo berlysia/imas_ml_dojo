@@ -1,0 +1,43 @@
+.page-header
+  h1 道場編集
+#content
+  - if @completed
+    .alert.alert-success
+      p 道場の更新を行いました。
+      ul.nav.nav-pills
+        li
+          a href="/list" 一覧へ
+        li
+          a href="/round" 道場巡りへ
+  form.form-horizontal method='post' action='/update' role='form'
+    .form-group
+      label.col-sm-4.control-label for='adminkey' 管理キー
+      .col-sm-6
+        input.form-control type='password' name='adminkey' id='adminkey' value="#{@adminkey}"
+    .form-group
+      label.col-sm-4.control-label for='userid' ミリオンライブID
+      .col-sm-6
+        input.form-control type='text' id='userid' name='userid' value="#{@userid}"
+    .form-group
+      label.col-sm-4.control-label for='username' ユーザー名
+      .col-sm-6
+        input.form-control type='text' id='username' name='username' value="#{@username}"
+    .form-group
+      label.col-sm-4.control-label for='unitname' ユニット名
+      .col-sm-6
+        input.form-control type='text' id='unitname' name='unitname' value="#{@unitname}"
+    .form-group
+      label.col-sm-4.control-label for='level' レベル
+      .col-sm-6
+        input.form-control type='text' id='level' name='level' value="#{@level}"
+    .form-group
+      label.col-sm-4.control-label for='dispvalue' 参考発揮値
+      .col-sm-6
+        input.form-control type='text' id='dispvalue' name='dispvalue' value="#{@dispvalue}"
+    .form-group
+      label.col-sm-4.control-label for='comment' コメント
+      .col-sm-6
+        input.form-control type='text' id='comment' name='comment' value="#{@comment}"
+    .form-group
+      .col-sm-offset-4.col-sm-6
+        button.btn.btn-primary type='submit' submit!

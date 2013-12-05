@@ -1,0 +1,61 @@
+.page-header
+  h1 設定
+#content
+  form.form-horizontal action='/setting' method='post'
+    .form-group
+      label.col-sm-4.control-label for='levelborder' レベル下限
+      .col-sm-6
+        input.form-control type='number' name='levelborder' id='levelborder' value="#{@levelborder}"
+    .form-group
+      label.col-sm-4.control-label for='valueborder' 発揮値上限
+      .col-sm-6
+        input.form-control type='number' name='valueborder' id='valueborder' value="#{@valueborder}"
+    / .form-group
+    /   label.col-sm-4.control-label for='showcount' 表示数
+    /   .col-sm-6
+    /     input.form-control type='number' name='showcount' id='showcount' value="#{@showcount}"
+    .form-group
+      label.col-sm-4.control-label for='target' 表示先指定
+      .col-sm-6
+        .radio
+          label
+            input type='radio' name='target[]' id='target-same' value="same"
+            = '同一タブ'
+        .radio
+          label
+            input type='radio' name='target[]' id='target-unique' value="unique"
+            = '毎回別のタブ（デフォルト）'
+        .radio
+          label
+            input type='radio' name='target[]' id='target-reuse' value="reuse"
+            = '別のタブを開き、以後上書き'
+    .form-group
+      .col-sm-offset-4.col-sm-3
+        button.btn.btn-primary type='submit' save changes
+      .col-sm-3
+        button.btn.btn-danger type='submit' name='delete' value='delete' clear settings
+
+
+  javascript:
+
+    (function(){
+      if(document.cookie){
+        var target = '';
+        var cookies = document.cookie.split('; ');
+        for(var i = cookies.length - 1; i >= 0; i--){
+          var cookieHash = cookies[i].split('=');
+          if(cookieHash[0] == 'target'){
+            target = cookieHash[1];
+            break;
+          }
+        }
+
+        var radio = document.querySelector('input[type="radio"][value="'+target+'"]');
+        if(radio){
+          radio.checked = true;
+        }else{
+          document.querySelector('input[type="radio"][value="unique"]').checked = true;
+        }
+
+      }
+    })();

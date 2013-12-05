@@ -1,0 +1,63 @@
+.page-header
+  h1 登録道場一覧
+  p 発揮値は参考です。コメントやユニット名から推測しているので、値がおかしい場合があります。
+#content
+.table-responsive
+  table.table.table-striped.table-hover.table-bordered.list
+    thead.header
+      - @rows.each do |row|
+        tr
+          - row.each do |k,v|
+            - if k == 'link' || k == 'home'
+              th rowspan='3' class="#{k}" = v
+            - elsif k == 'comment'
+              th colspan='3' class="#{k}" = v
+            - else
+              th class="#{k}" = v
+    tbody
+      - @dojos.each do |dojo|
+        - @rows.each do |row|
+          tr
+            - row.each do |k,v|
+              - if k == 'link'
+                td rowspan='3' class="#{k}"
+                  a href="http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojo.userid}/" target="#{@target}" バトルする
+              - elsif k == 'home'
+                td rowspan='3' class="#{k}"
+                  a href="http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojo.userid}/" target="#{@target}" マイページ
+              - elsif k == 'comment'
+                td colspan='3' class="#{k}" = "#{dojo[k]}"
+              - else
+                td class="#{k}" = "#{dojo[k]}"
+
+javascript:
+
+  var _d = document, _w = window;
+  var getStorage = function(){
+    var json = localStorage.dojo;
+    var date = (new Date()/1000/3600+9)/24|0;
+    if(!json || (json = JSON.parse(json)).date != date ){
+      return {ids:[], date:date};
+    }else return json;
+  };
+  var addStorage = function(a){
+    var ls  = getStorage();
+    ls.ids.push(a);
+    _w.localStorage.dojo = JSON.stringify(ls);
+  };
+  var hideListElement = function(){
+  };
+
+  $(function(){
+    $('[data-userid]').on('click',function(){
+      addStorage($(this).attr('data-userid'));
+      $(this).css('display','none');
+    })
+  });
+
+  (function(){
+    ls = getStorage().ids;
+    for (var i = ls.length - 1; i >= 0; i--) {
+      _d.getElementById(ls[i]).style.display = 'none'
+    };
+  })();

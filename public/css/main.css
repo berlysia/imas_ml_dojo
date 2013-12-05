@@ -1,0 +1,56 @@
+body {
+  padding-top: 70px;
+}
+
+.container {
+  width: 768px;
+}
+
+li.round {
+  border-bottom: 1px solid #ddd;
+}
+
+li.round > a {
+  display: block;
+  color: inherit;
+}
+
+.round.level-display {
+  display: block;
+  width: 96px;
+  height: 96px;
+  text-align: center;
+  line-height: 96px;
+  font-size: 32px;
+}
+
+.round.name-display {
+
+}
+
+.round.value-display {
+  height: 76px;
+  line-height: 76px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.round.comment-display {
+  font-size: 16px
+}
+
+th {
+  vertical-align: middle;
+}
+
+td.home, td.link, th.home, th.link {
+  width: 120px;
+}
+
+#content.about p{
+  margin: 0 1.2em;
+}
+
+.about dd {
+  margin-bottom: 0.8em;
+}

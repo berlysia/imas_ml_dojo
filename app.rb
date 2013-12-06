@@ -16,6 +16,30 @@ class Dojo < ActiveRecord::Base
   end
 end
 
+class Cache
+  def initialize
+    @threads = []
+    @hash = {}
+  end
+
+  def set(key, val, time)
+    puts "#{key}: #{val}, #{time}"
+    @threads << Thread.new do
+      @hash[key] = val.to_a
+      sleep(time)
+    end
+  end
+
+  def get(key)
+    @hash[key]
+  end
+end
+
+cache = Cache.new
+
+# cache 1 hour
+cache.set('dojos', Dojo.order('level desc'), 3600)
+
 error 403 do
   'Access forbidden'
 end
@@ -146,9 +170,11 @@ get '/list' do
 
   @target = 'imas_ml_dojo'
 
-  @dojos = Dojo.where(*query_params).order('level desc')
-  @dojos = @dojos.limit(@showcount) unless @showcount == 0
-  @dojos = @dojos.to_a
+  # @dojos = Dojo.where(*query_params).order('level desc')
+  # @dojos = @dojos.limit(@showcount) unless @showcount == 0
+  # @dojos = @dojos.to_a
+
+  @dojos = cache.get('dojos')
 
   slim :list
 end
@@ -165,9 +191,11 @@ get '/round' do
 
   @target = request.cookies.has_key?('target') ? request.cookies['target'] : '_blank'
 
-  @dojos = Dojo.where(*query_params).order('level desc')
-  @dojos = @dojos.limit(@showcount) unless @showcount == 0
-  @dojos = @dojos.to_a
+  # @dojos = Dojo.where(*query_params).order('level desc')
+  # @dojos = @dojos.limit(@showcount) unless @showcount == 0
+  # @dojos = @dojos.to_a
+
+  @dojos = cache.get('dojos')
 
   slim :round
 end

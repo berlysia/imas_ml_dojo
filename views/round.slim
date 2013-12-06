@@ -2,6 +2,7 @@
   p 道場巡回に特化したページです。
   p 絞り込みなどの設定は、ツールバーの設定ページから行ってください。
   p 発揮値は参考です。コメントやユニット名から推測しているので、値がおかしい場合があります。
+  p 掲載基準などは<a href='/about'>about</a>に記載
 #content
 ul.media-list
   - @dojos.each do |dojo|
@@ -29,8 +30,6 @@ javascript:
     ls.ids.push(a);
     _w.localStorage.dojo = JSON.stringify(ls);
   };
-  var hideListElement = function(){
-  };
 
   $(function(){
     $('[data-userid]').on('click',function(){
@@ -42,6 +41,6 @@ javascript:
   (function(){
     ls = getStorage().ids;
     for (var i = ls.length - 1; i >= 0; i--) {
-      _d.getElementById(ls[i]).style.display = 'none'
+      _d.querySelector('[data-userid="'+ls[i]+'"]').style.display = 'none'
     };
   })();

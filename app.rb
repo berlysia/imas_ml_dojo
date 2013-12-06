@@ -157,11 +157,6 @@ get '/list' do
   @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
     params[k].to_i > 0 ? params[k].to_i : request.cookies[k].to_i
   end
-  if @valueborder > 0
-    query_params = ["level >= :level and dispvalue <= :dispvalue", {:level => @levelborder, :dispvalue => @valueborder}]
-  else
-    query_params = ["level >= :level", {:level => @levelborder}]
-  end
 
   @rows = []
   @rows << Hash[[%w{home link username unitname},%w{マイページ リンク ユーザー名 ユニット名}].transpose]
@@ -170,9 +165,9 @@ get '/list' do
 
   @target = 'imas_ml_dojo'
 
-  # @dojos = Dojo.where(*query_params).order('level desc')
-  # @dojos = @dojos.limit(@showcount) unless @showcount == 0
-  # @dojos = @dojos.to_a
+  @dojos = cache.get('dojos')
+  @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
+  @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
 
   @dojos = cache.get('dojos')
 
@@ -196,15 +191,11 @@ get '/round' do
   # @dojos = @dojos.to_a
 
   @dojos = cache.get('dojos')
+  @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
+  @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
 
   slim :round
 end
-
-# delete '/remove' do
-#   dojo = Dojo.where(:userid => params['userid'])
-#   puts "dojo deleted: #{dojo.inspect}"
-#   dojo.destroy
-# end
 
 =begin
 

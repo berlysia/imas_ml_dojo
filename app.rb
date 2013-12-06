@@ -68,16 +68,23 @@ post '/update' do
     403
   else
     @completed = false
-    if %w{userid username level}.all?{|key| params.has_key? key}
-      dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
-        d.username = params['username'][0..63]
-        d.unitname = params['unitname'][0..11] || ""
-        d.level = params['level'].to_i
-        d.dispvalue = params['dispvalue'].to_i
-        d.comment = params['comment'][0..139] || ""
-        d.save
+    if params['delete'].nil?
+      if %w{userid username level}.all?{|key| params.has_key? key}
+        dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
+          d.username = params['username'][0..63]
+          d.unitname = params['unitname'][0..11] || ""
+          d.level = params['level'].to_i
+          d.dispvalue = params['dispvalue'].to_i
+          d.comment = params['comment'][0..139] || ""
+          d.save
+        end
+        @completed = true
       end
-      @completed = true
+    else
+      if params.has_key?('userid') && !params['userid'].nil?
+        Dojo.where(:userid => params['userid']).first.destroy
+        @completed = true
+      end
     end
     slim :update
   end

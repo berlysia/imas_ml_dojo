@@ -39,5 +39,7 @@
       .col-sm-6
         input.form-control type='text' id='comment' name='comment' value="#{@comment}"
     .form-group
-      .col-sm-offset-4.col-sm-6
-        button.btn.btn-primary type='submit' submit!
+      .col-sm-offset-4.col-sm-3
+        button.btn.btn-primary type='submit' save column
+      .col-sm-3
+        button.btn.btn-danger type='submit' name='delete' value='delete' delete column

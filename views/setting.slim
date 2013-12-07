@@ -3,17 +3,17 @@
 #content
   form.form-horizontal action='/setting' method='post'
     .form-group
-      label.col-sm-4.control-label for='levelborder' レベル下限
+      label.col-sm-4.control-label for='levelborder' レベル下限（0でリセット）
       .col-sm-6
         input.form-control type='number' name='levelborder' id='levelborder' value="#{@levelborder}"
     .form-group
-      label.col-sm-4.control-label for='valueborder' 発揮値上限
+      label.col-sm-4.control-label for='valueborder' 発揮値上限（0でリセット）
       .col-sm-6
         input.form-control type='number' name='valueborder' id='valueborder' value="#{@valueborder}"
-    / .form-group
-    /   label.col-sm-4.control-label for='showcount' 表示数
-    /   .col-sm-6
-    /     input.form-control type='number' name='showcount' id='showcount' value="#{@showcount}"
+    .form-group
+      label.col-sm-4.control-label for='showcount' 表示数（0でリセット）
+      .col-sm-6
+        input.form-control type='number' name='showcount' id='showcount' value="#{@showcount}"
     .form-group
       label.col-sm-4.control-label for='target' 表示先指定
       .col-sm-6

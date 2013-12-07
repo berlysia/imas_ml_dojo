@@ -18,26 +18,33 @@ end
 
 class Cache
   def initialize
-    @threads = []
+    @threads =
     @hash = {}
   end
 
   def set(key, val, time)
     puts "#{key}: #{val}, #{time}"
-    @threads << Thread.new do
-      @hash[key] = val.to_a
-      sleep(time)
+    @threads[key] = Thread.new do
+      loop do
+        @hash[key] = val.to_a
+        sleep(time)
+      end
     end
   end
 
   def get(key)
     @hash[key]
   end
+
+  def delete(key)
+    @threads[key].kill
+    @threads.delete key
+    @hash.delete key
+  end
 end
 
-cache = Cache.new
-
 # cache 1 hour
+cache = Cache.new
 cache.set('dojos', Dojo.order('level desc'), 3600)
 
 error 403 do
@@ -169,7 +176,27 @@ get '/list' do
   @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
   @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
 
-  @dojos = cache.get('dojos')
+
+  if @showcount > 0
+    @page = params['page'].to_i == 0 ? 1 : params['page'].to_i
+    @pagecount = (@dojos.size % @showcount == 0) ? @dojos.size/@showcount : @dojos.size/@showcount + 1
+
+    if @pagecount <= 5
+      @from = 1
+      @to = @pagecount
+    elsif @page <= 3
+      @from = 1
+      @to = 5
+    elsif @page >=  @pagecount - 2
+      @from = @pagecount - 4
+      @to = @pagecount
+    else
+      @from = @page - 2
+      @to = @page + 2
+    end
+
+    @dojos = @dojos[((@page-1)*@showcount)..(@page*@showcount-1)]
+  end
 
   slim :list
 end

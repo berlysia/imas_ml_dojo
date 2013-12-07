@@ -2,6 +2,19 @@
   h1 登録道場一覧
   p 発揮値は参考です。コメントやユニット名から推測しているので、値がおかしい場合があります。
 #content
+- if @showcount > 0
+  ul.pagination.pagination-lg
+    li
+      a href="/list?page=1" &laquo;
+    - (@from..@to).each do |i|
+      - if i == @page
+        li.disabled
+          a href="/list?page=#{i}" = i
+      - else
+        li
+          a href="/list?page=#{i}" = i
+    li
+      a href="/list?page=#{@pagecount}" &raquo;
 .table-responsive
   table.table.table-striped.table-hover.table-bordered.list
     thead.header
@@ -30,6 +43,19 @@
                 td colspan='3' class="#{k}" = "#{dojo[k]}"
               - else
                 td class="#{k}" = "#{dojo[k]}"
+- if @showcount > 0
+  ul.pagination.pagination-lg
+    li
+      a href="/list?page=1" &laquo;
+    - (@from..@to).each do |i|
+      - if i == @page
+        li.disabled
+          a href="/list?page=#{i}" = i
+      - else
+        li
+          a href="/list?page=#{i}" = i
+    li
+      a href="/list?page=#{@pagecount}" &raquo;
 
 javascript:
 

@@ -34,6 +34,10 @@
         button.btn.btn-primary type='submit' save changes
       .col-sm-3
         button.btn.btn-danger type='submit' name='delete' value='delete' clear settings
+  form.form-horizontal
+    .form-group
+      .col-sm-offset-4
+        button.btn onclick="resetStorage();" 訪問状況リセット
 
 
   javascript:
@@ -59,3 +63,7 @@
 
       }
     })();
+
+    var resetStorage = function(){
+      localStorage.dojo = JSON.stringify({ids:[], date:(new Date()/1000/3600+9)/24|0});
+    }

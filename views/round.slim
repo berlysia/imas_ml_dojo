@@ -3,7 +3,7 @@
   p 絞り込みなどの設定は、ツールバーの設定ページから行ってください。
   p 発揮値は参考です。コメントやユニット名から推測しているので、値がおかしい場合があります。
   p 掲載基準などは<a href='/about'>about</a>に記載
-  p 訪問状態は日付が変わるまで保持します。
+  p 訪問状態は3日おきに自動でリセットされます。設定からいつでもリセットすることができます。
 #content
 ul.media-list
   - @dojos.each do |dojo|
@@ -22,7 +22,7 @@ javascript:
   var getStorage = function(){
     var json = localStorage.dojo;
     var date = (new Date()/1000/3600+9)/24|0;
-    if(!json || (json = JSON.parse(json)).date != date ){
+    if(!json || ((json = JSON.parse(json)).date > date || date > json.date+2) ){
       return {ids:[], date:date};
     }else return json;
   };

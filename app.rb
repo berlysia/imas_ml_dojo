@@ -107,11 +107,21 @@ post '/update' do
     @completed = false
     if params['delete'].nil?
       if %w{userid username level}.all?{|key| params.has_key? key}
+
+        dispvalue = []
+        [params['username'][0..63], params['unitname'][0..11], params['comment'][0..139]].each do |str|
+          next if str.nil?
+          foo = NKF.nkf('-Wwxm0Z0',str)
+          foo.gsub(',','').split(/\D/).map{|i| i.to_i}.sort[-1].tap{|i| i ? dispvalue<<i : nil}
+          foo.match(/([0-9,]+)(.[0-9]+)?k/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*1000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
+          foo.match(/([0-9,]+)(.[0-9]+)?万/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*10000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
+        end
+
         dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
           d.username = params['username'][0..63]
           d.unitname = params['unitname'][0..11] || ""
           d.level = params['level'].to_i
-          d.dispvalue = params['dispvalue'].to_i
+          d.dispvalue = (params['dispvalue'] || dispvalue.max || '').to_i
           d.comment = params['comment'][0..139] || ""
           d.save
         end

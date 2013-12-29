@@ -264,6 +264,8 @@ get '/round' do
   @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
   @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
 
+  @flag = !!params['flag']
+
   slim :round
 end
 

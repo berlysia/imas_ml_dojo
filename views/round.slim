@@ -9,7 +9,9 @@ ul.media-list
   - @dojos.each do |dojo|
     li.media.round data-userid="#{dojo.userid}"
       button type='button' class='close' &times;
-      a href="http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojo.userid}/" target="#{@target}"
+      - url = "http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojo.userid}/" if @flag
+      - url = "http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojo.userid}/" unless @flag
+      a href="#{url}" target="#{@target}"
         .pull-left.round.level-display ="#{dojo.level}"
         .media-body
           h4.media-heading.round.name-display ="#{dojo.username}"

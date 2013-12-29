@@ -1,0 +1,23 @@
+# Logfile created on 2013-12-30 02:21:26 +0900 by logger.rb/44203
+I, [2013-12-30T02:21:26.393822 #5039]  INFO -- : 0:  rake (10.1.0) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/default/rake-10.1.0.gemspec
+I, [2013-12-30T02:21:27.652075 #5039]  INFO -- : 0:  i18n (0.6.9) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/i18n-0.6.9.gemspec
+I, [2013-12-30T02:21:27.652577 #5039]  INFO -- : 0:  minitest (4.7.5) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/default/minitest-4.7.5.gemspec
+I, [2013-12-30T02:21:28.382968 #5039]  INFO -- : 0:  multi_json (1.8.2) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/multi_json-1.8.2.gemspec
+I, [2013-12-30T02:21:37.407960 #5039]  INFO -- : 0:  atomic (1.1.14) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/atomic-1.1.14.gemspec
+I, [2013-12-30T02:21:38.125794 #5039]  INFO -- : 0:  thread_safe (0.1.3) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/thread_safe-0.1.3.gemspec
+I, [2013-12-30T02:21:39.255177 #5039]  INFO -- : 0:  tzinfo (0.3.38) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/tzinfo-0.3.38.gemspec
+I, [2013-12-30T02:21:40.088811 #5039]  INFO -- : 0:  activesupport (4.0.2) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/activesupport-4.0.2.gemspec
+I, [2013-12-30T02:21:40.786191 #5039]  INFO -- : 0:  builder (3.1.4) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/builder-3.1.4.gemspec
+I, [2013-12-30T02:21:41.485278 #5039]  INFO -- : 0:  activemodel (4.0.2) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/activemodel-4.0.2.gemspec
+I, [2013-12-30T02:21:42.207726 #5039]  INFO -- : 0:  activerecord-deprecated_finders (1.0.3) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/activerecord-deprecated_finders-1.0.3.gemspec
+I, [2013-12-30T02:21:42.930305 #5039]  INFO -- : 0:  arel (4.0.1) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/arel-4.0.1.gemspec
+I, [2013-12-30T02:21:43.790624 #5039]  INFO -- : 0:  activerecord (4.0.2) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/activerecord-4.0.2.gemspec
+I, [2013-12-30T02:21:50.043851 #5039]  INFO -- : 0:  pg (0.17.0) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/pg-0.17.0.gemspec
+I, [2013-12-30T02:21:50.836610 #5039]  INFO -- : 0:  rack (1.5.2) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/rack-1.5.2.gemspec
+I, [2013-12-30T02:21:51.547534 #5039]  INFO -- : 0:  rack-protection (1.5.1) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/rack-protection-1.5.1.gemspec
+I, [2013-12-30T02:21:52.295137 #5039]  INFO -- : 0:  tilt (1.4.1) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/tilt-1.4.1.gemspec
+I, [2013-12-30T02:21:53.222217 #5039]  INFO -- : 0:  sinatra (1.4.4) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/sinatra-1.4.4.gemspec
+I, [2013-12-30T02:21:54.397843 #5039]  INFO -- : 0:  sinatra-activerecord (1.2.3) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/sinatra-activerecord-1.2.3.gemspec
+I, [2013-12-30T02:21:55.121069 #5039]  INFO -- : 0:  temple (0.6.7) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/temple-0.6.7.gemspec
+I, [2013-12-30T02:21:55.945628 #5039]  INFO -- : 0:  slim (2.0.2) from /Users/berlysia/.rbenv/versions/2.1.0/lib/ruby/gems/2.1.0/specifications/slim-2.0.2.gemspec
+I, [2013-12-30T02:21:55.946066 #5039]  INFO -- : 0:  bundler (1.5.1) from /Users/berlysia/.gem/ruby/2.1.0/specifications/bundler-1.5.1.gemspec

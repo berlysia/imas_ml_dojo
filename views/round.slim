@@ -8,6 +8,7 @@
 ul.media-list
   - @dojos.each do |dojo|
     li.media.round data-userid="#{dojo.userid}"
+      button type='button' class='close' &times;
       a href="http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojo.userid}/" target="#{@target}"
         .pull-left.round.level-display ="#{dojo.level}"
         .media-body

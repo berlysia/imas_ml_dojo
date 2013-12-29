@@ -1,0 +1,64 @@
+Running in verbose mode
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:34:06 2013
+-----------------------------------------------------------------
+
+check for "/usr/local/Cellar/postgresql/9.2.1/bin" failed: No such file or directory
+
+Running in verbose mode
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:34:34 2013
+-----------------------------------------------------------------
+
+"/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres9.2/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+
+*failure*
+There were problems executing ""/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres9.2/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1"
+Consult the last few lines of "pg_upgrade_server.log" for
+the probable cause of the failure.
+There seems to be a postmaster servicing the old cluster.
+Please shutdown that postmaster and try again.
+Running in verbose mode
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:35:13 2013
+-----------------------------------------------------------------
+
+"/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres9.2/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+
+*failure*
+There were problems executing ""/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres9.2/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1"
+Consult the last few lines of "pg_upgrade_server.log" for
+the probable cause of the failure.
+There seems to be a postmaster servicing the old cluster.
+Please shutdown that postmaster and try again.
+Running in verbose mode
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:37:18 2013
+-----------------------------------------------------------------
+
+"/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+
+*failure*
+There were problems executing ""/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1"
+Consult the last few lines of "pg_upgrade_server.log" for
+the probable cause of the failure.
+There seems to be a postmaster servicing the old cluster.
+Please shutdown that postmaster and try again.
+Running in verbose mode
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:43:20 2013
+-----------------------------------------------------------------
+
+"/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+
+*failure*
+There were problems executing ""/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1"
+Consult the last few lines of "pg_upgrade_server.log" for
+the probable cause of the failure.
+There seems to be a postmaster servicing the old cluster.
+Please shutdown that postmaster and try again.

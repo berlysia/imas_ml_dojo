@@ -1,0 +1,69 @@
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:34:06 2013
+-----------------------------------------------------------------
+
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:34:34 2013
+-----------------------------------------------------------------
+
+command: "/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres9.2/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+pg_ctl: another server might be running; trying to start server anyway
+waiting for server to start....FATAL:  data directory "/usr/local/var/postgres9.2" has group or world access
+DETAIL:  Permissions should be u=rwx (0700).
+....
+pg_ctl: this data directory appears to be running a pre-existing postmaster
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+
+
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:35:13 2013
+-----------------------------------------------------------------
+
+command: "/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres9.2/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+pg_ctl: another server might be running; trying to start server anyway
+waiting for server to start....FATAL:  data directory "/usr/local/var/postgres9.2" has group or world access
+DETAIL:  Permissions should be u=rwx (0700).
+....
+pg_ctl: this data directory appears to be running a pre-existing postmaster
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+
+
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:37:18 2013
+-----------------------------------------------------------------
+
+command: "/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+pg_ctl: another server might be running; trying to start server anyway
+waiting for server to start....FATAL:  data directory "/usr/local/var/postgres" has group or world access
+DETAIL:  Permissions should be u=rwx (0700).
+....
+pg_ctl: this data directory appears to be running a pre-existing postmaster
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+
+
+
+-----------------------------------------------------------------
+  pg_upgrade run on Mon Dec 30 02:43:20 2013
+-----------------------------------------------------------------
+
+command: "/usr/local/Cellar/postgresql/9.2.4/bin/pg_ctl" -w -l "pg_upgrade_server.log" -D "/usr/local/var/postgres/" -o "-p 50432 -c autovacuum=off -c autovacuum_freeze_max_age=2000000000  -c listen_addresses='' -c unix_socket_permissions=0700" start >> "pg_upgrade_server.log" 2>&1
+pg_ctl: another server might be running; trying to start server anyway
+waiting for server to start....FATAL:  data directory "/usr/local/var/postgres" has group or world access
+DETAIL:  Permissions should be u=rwx (0700).
+....
+pg_ctl: this data directory appears to be running a pre-existing postmaster
+ stopped waiting
+pg_ctl: could not start server
+Examine the log output.
+
+

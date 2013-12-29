@@ -18,12 +18,13 @@ end
 
 class Cache
   def initialize
-    @threads =
+    @threads = {}
     @hash = {}
   end
 
   def set(key, val, time)
     puts "#{key}: #{val}, #{time}"
+    delete(key) if @threads.has_key? key
     @threads[key] = Thread.new do
       loop do
         @hash[key] = val.to_a
@@ -44,14 +45,19 @@ class Cache
 end
 
 # cache 1 hour
-cache = Cache.new
-cache.set('dojos', Dojo.order('level desc'), 3600)
+$cache = Cache.new
+$cache.set('dojos', Dojo.order('level desc'), 3600)
 
 error 403 do
   'Access forbidden'
 end
 
 get '/' do
+  redirect '/round'
+end
+
+get '/force_reflesh' do
+  $cache.set('dojos', Dojo.order('level desc'), 3600)
   redirect '/round'
 end
 
@@ -95,6 +101,33 @@ get '/update' do
 end
 
 post '/update' do
+  unless params['adminkey'] == ADMINKEY
+    403
+  else
+    @completed = false
+    if params['delete'].nil?
+      if %w{userid username level}.all?{|key| params.has_key? key}
+        dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
+          d.username = params['username'][0..63]
+          d.unitname = params['unitname'][0..11] || ""
+          d.level = params['level'].to_i
+          d.dispvalue = params['dispvalue'].to_i
+          d.comment = params['comment'][0..139] || ""
+          d.save
+        end
+        @completed = true
+      end
+    else
+      if params.has_key?('userid') && !params['userid'].nil?
+        Dojo.where(:userid => params['userid']).first.destroy
+        @completed = true
+      end
+    end
+    slim :update
+  end
+end
+
+get '/update_shortcut' do
   unless params['adminkey'] == ADMINKEY
     403
   else
@@ -172,7 +205,7 @@ get '/list' do
 
   @target = 'imas_ml_dojo'
 
-  @dojos = cache.get('dojos')
+  @dojos = $cache.get('dojos')
   @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
   @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
 
@@ -217,7 +250,7 @@ get '/round' do
   # @dojos = @dojos.limit(@showcount) unless @showcount == 0
   # @dojos = @dojos.to_a
 
-  @dojos = cache.get('dojos')
+  @dojos = $cache.get('dojos')
   @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
   @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
 

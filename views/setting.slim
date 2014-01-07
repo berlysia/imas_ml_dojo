@@ -14,7 +14,7 @@
       label.col-sm-4.control-label for='showcount' 表示数（0でリセット）
       .col-sm-6
         input.form-control type='number' name='showcount' id='showcount' value="#{@showcount}"
-    .form-group
+    .form-group#setting-target
       label.col-sm-4.control-label for='target' 表示先指定
       .col-sm-6
         .radio
@@ -29,6 +29,21 @@
           label
             input type='radio' name='target[]' id='target-reuse' value="reuse"
             = '別のタブを開き、以後上書き'
+    .form-group#setting-sort
+      label.col-sm-4.control-label for='sort' 巡回リストの順序
+      .col-sm-6
+        .radio
+          label
+            input type='radio' name='sort[]' id='random' value="random"
+            = 'ランダム（デフォルト）'
+        .radio
+          label
+            input type='radio' name='sort[]' id='descend' value="descend"
+            = '降順、大きい順'
+        .radio
+          label
+            input type='radio' name='sort[]' id='ascend' value="ascend"
+            = '昇順、小さい順'
     .form-group
       .col-sm-offset-4.col-sm-3
         button.btn.btn-primary type='submit' save changes
@@ -45,20 +60,26 @@
     (function(){
       if(document.cookie){
         var target = '';
+        var sort = '';
         var cookies = document.cookie.split('; ');
         for(var i = cookies.length - 1; i >= 0; i--){
           var cookieHash = cookies[i].split('=');
-          if(cookieHash[0] == 'target'){
-            target = cookieHash[1];
-            break;
-          }
+          if(cookieHash[0] == 'target') target = cookieHash[1];
+          if(cookieHash[0] == 'sort') sort = cookieHash[1];
         }
 
-        var radio = document.querySelector('input[type="radio"][value="'+target+'"]');
-        if(radio){
-          radio.checked = true;
+        var targetRadio = document.querySelector('#setting-target input[type="radio"][value="'+target+'"]');
+        if(targetRadio){
+          targetRadio.checked = true;
         }else{
-          document.querySelector('input[type="radio"][value="unique"]').checked = true;
+          document.querySelector('#setting-target input[type="radio"][value="unique"]').checked = true;
+        }
+
+        var sortRadio = document.querySelector('#setting-sort input[type="radio"][value="'+sort+'"]');
+        if(sortRadio){
+          sortRadio.checked = true;
+        }else{
+          document.querySelector('#setting-sort input[type="radio"][value="random"]').checked = true;
         }
 
       }

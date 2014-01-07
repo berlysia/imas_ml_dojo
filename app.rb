@@ -186,9 +186,10 @@ post '/setting' do
     @showcount = nil
   else
     %w{levelborder valueborder showcount}.each do |k|
-      response.set_cookie k, {:value => params[k].to_i, :max_age => '2592000'} if params.has_key?(k) && params[k].to_i > 0
+      response.set_cookie(k, {:value => params[k].to_i, :max_age => '2592000'}) if params.has_key?(k) && params[k].to_i > 0
     end
-    response.set_cookie 'target', {:value => params['target'][0], :max_age => '2592000'} if params.has_key?('target')
+    response.set_cookie('target', {:value => params['target'][0], :max_age => '2592000'}) if params.has_key?('target')
+    response.set_cookie('sort', {:value => params['sort'][0], :max_age => '2592000'}) if params.has_key?('sort')
 
     @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
       if params[k].nil? && request.cookies[k].nil?
@@ -248,13 +249,14 @@ get '/round' do
   @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
     params[k].to_i > 0 ? params[k].to_i : request.cookies[k].to_i
   end
-  if @valueborder > 0
-    query_params = ["level >= :level and dispvalue <= :dispvalue", {:level => @levelborder, :dispvalue => @valueborder}]
-  else
-    query_params = ["level >= :level", {:level => @levelborder}]
-  end
+  # if @valueborder > 0
+  #   query_params = ["level >= :level and dispvalue <= :dispvalue", {:level => @levelborder, :dispvalue => @valueborder}]
+  # else
+  #   query_params = ["level >= :level", {:level => @levelborder}]
+  # end
 
   @target = request.cookies.has_key?('target') ? request.cookies['target'] : '_blank'
+  @sorttype = request.cookies.has_key?('sort') ? request.cookies['sort'] : 'random'
 
   # @dojos = Dojo.where(*query_params).order('level desc')
   # @dojos = @dojos.limit(@showcount) unless @showcount == 0
@@ -263,6 +265,11 @@ get '/round' do
   @dojos = $cache.get('dojos')
   @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
   @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
+  if @sorttype === 'random'
+    @dojos.shuffle!
+  elsif @sorttype === 'ascend'
+    @dojos.reverse!
+  end
 
   @flag = !!params['flag']
 

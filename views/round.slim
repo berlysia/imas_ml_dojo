@@ -4,6 +4,7 @@
   p 掲載基準などは<a href='/about'>about</a>に記載
   p 訪問状態は3日おきに自動でリセットされます。設定からいつでもリセットすることができます。
   p 利用頻度の偏りを解消するため、並び順が読み込みの度に変動します。設定から昇順降順に固定可能です。
+  p.recommend 今日はオーディションバトル推奨日です。
 #content
 ul.media-list
   - @dojos.each do |dojo|
@@ -21,30 +22,31 @@ ul.media-list
 
 javascript:
 
-  var _d = document, _w = window;
-  var getStorage = function(){
-    var json = localStorage.dojo;
-    var date = (new Date()/1000/3600+9)/24|0;
-    if(!json || ((json = JSON.parse(json)).date > date || date > json.date+2) ){
-      return {ids:[], date:date};
-    }else return json;
-  };
-  var addStorage = function(a){
-    var ls  = getStorage();
-    ls.ids.push(a);
-    _w.localStorage.dojo = JSON.stringify(ls);
-  };
-
   $(function(){
+    var _d = document, _w = window;
+    var getStorage = function(){
+      var json = localStorage.dojo;
+      var date = (new Date()/1000/3600+9)/24|0;
+      // if(!json || ((json = JSON.parse(json)).date > date || date > json.date+2) ){
+      if(!json){
+        return {ids:[], date:date};
+      }else return JSON.parse(json);
+    };
+    var addStorage = function(a){
+      var ls = getStorage();
+      ls.ids.push(a);
+      _w.localStorage.dojo = JSON.stringify(ls);
+    };
+
     $('[data-userid]').on('click',function(){
       addStorage($(this).attr('data-userid'));
       $(this).css('display','none');
-    })
-  });
+    });
 
-  (function(){
-    ls = getStorage().ids;
-    for (var i = ls.length - 1; i >= 0; i--) {
-      _d.querySelector('[data-userid="'+ls[i]+'"]').style.display = 'none'
+    var ids = getStorage().ids;
+    for (var i = 0, max = ids.length; i < max; i++) {
+      _d.querySelector('[data-userid="'+ids[i]+'"]').style.display = 'none'
     };
-  })();
+
+    if(new Date().getDay() == 2) $('.recommend').show();
+  });

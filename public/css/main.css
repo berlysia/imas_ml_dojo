@@ -72,3 +72,7 @@ li.round > a {
   margin-bottom: 0.8em;
 }
 
+.recommend {
+  display: none;
+  color: #e22;
+}

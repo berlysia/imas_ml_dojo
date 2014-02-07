@@ -2,6 +2,9 @@
 # encoding: utf-8
 
 require 'nkf'
+require "sinatra/json"
+set :slim, :pretty => true
+
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || 'postgres://berlysia@localhost/imas_ml_dojo')
 
 ADMINKEY = 'YuKiHo_iS_My_pRinCesS'
@@ -52,8 +55,12 @@ error 403 do
   'Access forbidden'
 end
 
-get '/' do
-  redirect '/round'
+get '/dojo.json' do
+  json $cache.get('dojos')
+end
+
+get '/round' do
+  redirect '/'
 end
 
 get '/force_reflesh' do
@@ -245,7 +252,7 @@ get '/list' do
   slim :list
 end
 
-get '/round' do
+get '/' do
   @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
     params[k].to_i > 0 ? params[k].to_i : request.cookies[k].to_i
   end

@@ -45,7 +45,8 @@ javascript:
 
     var ids = getStorage().ids;
     for (var i = 0, max = ids.length; i < max; i++) {
-      _d.querySelector('[data-userid="'+ids[i]+'"]').style.display = 'none'
+      var target = _d.querySelector('[data-userid="'+ids[i]+'"]');
+      if(target) target.style.display = 'none';
     };
 
     if(new Date().getDay() == 2) $('.recommend').show();

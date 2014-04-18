@@ -65,7 +65,7 @@ end
 
 get '/force_reflesh' do
   $cache.set('dojos', Dojo.order('level desc'), 3600)
-  redirect '/round'
+  redirect '/'
 end
 
 get '/about' do

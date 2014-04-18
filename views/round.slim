@@ -29,7 +29,7 @@ javascript:
       var date = (new Date()/1000/3600+9)/24|0;
       if(!json || ((json = JSON.parse(json)).date > date || date > json.date+2) ){
         return {ids:[], date:date};
-      }else return JSON.parse(json);
+      }else return json;
     };
     var addStorage = function(a){
       var ls = getStorage();

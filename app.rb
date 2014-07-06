@@ -7,7 +7,7 @@ set :slim, :pretty => true
 
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || 'postgres://berlysia@localhost/imas_ml_dojo')
 
-ADMINKEY = 'YuKiHo_iS_My_pRinCesS'
+ADMINKEY = ENV['IMAS_ML_DOJO_UPDATE_KEY']
 
 class Dojo < ActiveRecord::Base
   def inspect

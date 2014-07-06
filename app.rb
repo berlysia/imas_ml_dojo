@@ -5,9 +5,21 @@ require 'nkf'
 require "sinatra/json"
 set :slim, :pretty => true
 
+configure do
+  enable :sessions
+end
+
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'] || 'postgres://berlysia@localhost/imas_ml_dojo')
 
-ADMINKEY = 'YuKiHo_iS_My_pRinCesS'
+ADMINKEY = ENV['IMAS_ML_DOJO_UPDATE_KEY']
+
+DEFAULT_VALUE = {
+  'LEVEL_BOUND' => 0,
+  'VALUE_BOUND' => 1000000,
+  'ORDER' => "DESC",
+  'EACH_PAGE_LENGTH' => 20,
+  'TARGET' => "UNIQUE",
+}
 
 class Dojo < ActiveRecord::Base
   def inspect
@@ -55,42 +67,83 @@ error 403 do
   'Access forbidden'
 end
 
+# -----
+# public APIs
+# -----
+
+get '/api/all.json' do
+  json $cache.get('dojos')
+end
+
+# 互換性のため
 get '/dojo.json' do
   json $cache.get('dojos')
 end
 
-get '/round' do
-  redirect '/'
+get '/api/getdojos/?' do
+  tmp = $cache.get('dojos')
+  offset = params[:offset].to_i
+  page = params[:page].to_i
+  length = (params[:length]||20).to_i
+
+  tmp = tmp.select{|d|
+    params[:level_bound].to_i <= d.level && # TODO ソート済みなので先にレベルで切っておく
+    d.dispvalue <= (params[:value_bound]||1000000).to_i
+  }
+  if length == 0
+    if params[:page_max]
+      json tmp.size
+    elsif (params[:order]||"").upcase === "ASC"
+      json tmp.reverse
+    else
+      json tmp
+    end
+  else
+    if params[:page_max]
+      json tmp.size/length
+    elsif (params[:order]||"").upcase === "ASC"
+      json tmp[(-offset-(length*(page+1)))..(-offset-length*page-1)]
+    else
+      json tmp[(offset+length*page)...(offset+length*(page+1))]
+    end
+  end
 end
 
-get '/force_reflesh' do
+# -----
+# secret APIs
+# -----
+
+get '/sapi/force_refresh' do
   $cache.set('dojos', Dojo.order('level desc'), 3600)
   redirect '/'
 end
 
-get '/about' do
-  slim :about
-end
-
-get '/id_check' do
+get '/sapi/id_check' do
   slim :id_check
 end
 
-post '/id_check' do
-  dojo = Dojo.where(:userid => params['userid']).first
-  redirect "/update?#{URI.encode dojo.serialize}"
-end
-
-get '/update' do
+post '/sapi/id_check' do
   unless params['adminkey'] == ADMINKEY
     403
   else
-    @adminkey = params['adminkey']
-    @userid = params['userid']
-    @username = params['username']
-    @unitname = params['unitname']
-    @level = params['level']
-    @comment = params['comment']
+    dojo = Dojo.where(:userid => params['userid']).first
+    session[:dojo] = dojo
+    redirect "/sapi/update?adminkey=#{ADMINKEY}"
+  end
+end
+
+get '/sapi/update' do
+  unless params['adminkey'] == ADMINKEY
+    403
+  else
+    dojo = session[:dojo] || params
+
+    @adminkey = dojo['adminkey']
+    @userid = dojo['userid']
+    @username = dojo['username']
+    @unitname = dojo['unitname']
+    @level = dojo['level']
+    @comment = dojo['comment']
 
     dispvalue = []
     [@username, @unitname, @comment].each do |str|
@@ -101,83 +154,65 @@ get '/update' do
       foo.match(/([0-9,]+)(.[0-9]+)?万/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*10000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
     end
 
-    @dispvalue = params['dispvalue'] || dispvalue.max || ''
+    @dispvalue = dojo['dispvalue'] || dispvalue.max || ''
 
     slim :update
   end
 end
 
-post '/update' do
-  unless params['adminkey'] == ADMINKEY
+post '/sapi/update' do
+  if params['adminkey'] != ADMINKEY
     403
+  elsif params['delete'].nil?
+    @completed = false
+    if %w{userid username level}.all?{|key| params.has_key? key}
+
+      dispvalue = []
+      [params['username'][0..63], params['unitname'][0..11], params['comment'][0..139]].each do |str|
+        next if str.nil?
+        foo = NKF.nkf('-Wwxm0Z0',str)
+        foo.gsub(',','').split(/\D/).map{|i| i.to_i}.sort[-1].tap{|i| i ? dispvalue<<i : nil}
+        foo.match(/([0-9,]+)(.[0-9]+)?k/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*1000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
+        foo.match(/([0-9,]+)(.[0-9]+)?万/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*10000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
+      end
+
+      dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
+        d.username = params['username'][0..63]
+        d.unitname = params['unitname'][0..11] || ""
+        d.level = params['level'].to_i
+        d.dispvalue = (params['dispvalue'] || dispvalue.max || '').to_i
+        d.comment = params['comment'][0..139] || ""
+        d.save
+      end
+      @completed = true
+    end
+    slim :update
   else
     @completed = false
-    if params['delete'].nil?
-      if %w{userid username level}.all?{|key| params.has_key? key}
-
-        dispvalue = []
-        [params['username'][0..63], params['unitname'][0..11], params['comment'][0..139]].each do |str|
-          next if str.nil?
-          foo = NKF.nkf('-Wwxm0Z0',str)
-          foo.gsub(',','').split(/\D/).map{|i| i.to_i}.sort[-1].tap{|i| i ? dispvalue<<i : nil}
-          foo.match(/([0-9,]+)(.[0-9]+)?k/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*1000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
-          foo.match(/([0-9,]+)(.[0-9]+)?万/i).tap{|s| break ((s[1].gsub(',','').to_i+s[2].to_f)*10000).to_i if s}.tap{|i| i ? dispvalue<<i : nil}
-        end
-
-        dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
-          d.username = params['username'][0..63]
-          d.unitname = params['unitname'][0..11] || ""
-          d.level = params['level'].to_i
-          d.dispvalue = (params['dispvalue'] || dispvalue.max || '').to_i
-          d.comment = params['comment'][0..139] || ""
-          d.save
-        end
-        @completed = true
-      end
-    else
-      if params.has_key?('userid') && !params['userid'].nil?
-        Dojo.where(:userid => params['userid']).first.destroy
-        @completed = true
-      end
+    if params.has_key?('userid') && !params['userid'].nil?
+      Dojo.where(:userid => params['userid']).first.destroy
+      @completed = true
     end
     slim :update
   end
 end
 
-get '/update_shortcut' do
-  unless params['adminkey'] == ADMINKEY
-    403
-  else
-    @completed = false
-    if params['delete'].nil?
-      if %w{userid username level}.all?{|key| params.has_key? key}
-        dojo = Dojo.where(:userid => params['userid']).first_or_create.tap do |d|
-          d.username = params['username'][0..63]
-          d.unitname = params['unitname'][0..11] || ""
-          d.level = params['level'].to_i
-          d.dispvalue = params['dispvalue'].to_i
-          d.comment = params['comment'][0..139] || ""
-          d.save
-        end
-        @completed = true
-      end
-    else
-      if params.has_key?('userid') && !params['userid'].nil?
-        Dojo.where(:userid => params['userid']).first.destroy
-        @completed = true
-      end
-    end
-    slim :update
-  end
+# -----
+# main
+# -----
+
+# 互換性のため
+get '/round' do
+  redirect '/'
+end
+
+get '/about' do
+  slim :about
 end
 
 get '/setting' do
-  @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
-    if request.cookies[k].nil?
-      ""
-    else
-      request.cookies[k].to_i == 0 ? '' : request.cookies[k].to_i
-    end
+  @level_bound, @value_bound, @each_page_length = %w{level_bound value_bound each_page_length}.map do |k|
+    request.cookies.has_key?(k) ? request.cookies[k].to_i : DEFAULT_VALUE[k.upcase]
   end
 
   slim :setting
@@ -185,35 +220,34 @@ end
 
 post '/setting' do
   if params.has_key? 'delete'
-    %w{levelborder valueborder showcount target}.each do |k|
+    %w{level_bound value_bound each_page_length target}.each do |k|
       response.delete_cookie(k) if request.cookies.has_key?(k)
     end
-    @levelborder = nil
-    @valueborder = nil
-    @showcount = nil
   else
-    %w{levelborder valueborder showcount}.each do |k|
-      response.set_cookie(k, {:value => params[k].to_i, :max_age => '2592000'}) if params.has_key?(k) && params[k].to_i > 0
+    %w{level_bound value_bound each_page_length}.each do |k|
+      if params.has_key?(k) && 0 <= params[k].to_i
+        response.set_cookie(k, {:value => params[k].to_i, :max_age => '2592000'})
+      end
     end
-    response.set_cookie('target', {:value => params['target'][0], :max_age => '2592000'}) if params.has_key?('target')
-    response.set_cookie('sort', {:value => params['sort'][0], :max_age => '2592000'}) if params.has_key?('sort')
-
-    @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
-      if params[k].nil? && request.cookies[k].nil?
-        ""
-      elsif !params[k].nil?
-        params[k].to_i == 0 ? '' : params[k].to_i
-      else
-        request.cookies[k].to_i == 0 ? '' : request.cookies[k].to_i
+    %w{target sort}.each do |k|
+      if params.has_key?(k)
+        response.set_cookie(k, {:value => params[k][0], :max_age => '2592000'})
       end
     end
   end
-  slim :setting
+
+  redirect '/setting'
 end
 
 get '/list' do
-  @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
-    params[k].to_i > 0 ? params[k].to_i : request.cookies[k].to_i
+  @level_bound, @value_bound, @each_page_length = %w{level_bound value_bound each_page_length}.map do |k|
+    request.cookies.has_key?(k) ? request.cookies[k].to_i : DEFAULT_VALUE[k.upcase]
+  end
+
+  if request.cookies.has_key?('sort')
+    @order = ['DESC','ASC'].include?(request.cookies['sort'].upcase) ? request.cookies['sort'].upcase : DEFAULT_VALUE['ORDER']
+  else
+    @order = DEFAULT_VALUE["ORDER"]
   end
 
   @rows = []
@@ -223,58 +257,23 @@ get '/list' do
 
   @target = 'imas_ml_dojo'
 
-  @dojos = $cache.get('dojos')
-  @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
-  @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
-
-
-  if @showcount > 0
-    @page = params['page'].to_i == 0 ? 1 : params['page'].to_i
-    @pagecount = (@dojos.size % @showcount == 0) ? @dojos.size/@showcount : @dojos.size/@showcount + 1
-
-    if @pagecount <= 5
-      @from = 1
-      @to = @pagecount
-    elsif @page <= 3
-      @from = 1
-      @to = 5
-    elsif @page >=  @pagecount - 2
-      @from = @pagecount - 4
-      @to = @pagecount
-    else
-      @from = @page - 2
-      @to = @page + 2
-    end
-
-    @dojos = @dojos[((@page-1)*@showcount)..(@page*@showcount-1)]
-  end
+  @page = params['page'].to_i
 
   slim :list
 end
 
 get '/' do
-  @levelborder, @valueborder, @showcount = %w{levelborder valueborder showcount}.map do |k|
-    params[k].to_i > 0 ? params[k].to_i : request.cookies[k].to_i
+  @level_bound, @value_bound, @each_page_length = %w{level_bound value_bound each_page_length}.map do |k|
+    request.cookies.has_key?(k) ? request.cookies[k].to_i : DEFAULT_VALUE[k.upcase]
   end
-  # if @valueborder > 0
-  #   query_params = ["level >= :level and dispvalue <= :dispvalue", {:level => @levelborder, :dispvalue => @valueborder}]
-  # else
-  #   query_params = ["level >= :level", {:level => @levelborder}]
-  # end
 
   @target = request.cookies.has_key?('target') ? request.cookies['target'] : '_blank'
-  @sorttype = request.cookies.has_key?('sort') ? request.cookies['sort'] : 'random'
-
-  # @dojos = Dojo.where(*query_params).order('level desc')
-  # @dojos = @dojos.limit(@showcount) unless @showcount == 0
-  # @dojos = @dojos.to_a
+  @sorttype = request.cookies.has_key?('sort') ? request.cookies['sort'] : 'desc'
 
   @dojos = $cache.get('dojos')
-  @dojos = @dojos.select{|dojo| dojo.dispvalue <= @valueborder} if @valueborder > 0
-  @dojos = @dojos.select{|dojo| dojo.level >= @levelborder}
-  if @sorttype === 'random'
-    @dojos.shuffle!
-  elsif @sorttype === 'ascend'
+  @dojos = @dojos.select{|dojo| dojo.dispvalue <= @value_bound} if @value_bound > 0
+  @dojos = @dojos.select{|dojo| dojo.level >= @level_bound}
+  if @sorttype === 'asc'
     @dojos.reverse!
   end
 
@@ -282,18 +281,3 @@ get '/' do
 
   slim :round
 end
-
-=begin
-
-・やりたいこと
-表示
-登録
-編集
-
-・ひつようなこと
-道場情報の登録→重複検知
-道場情報の更新→認証か管理人の手動にしないと荒らしの可能性
-自動取得にするならサブアカウントの取得と運用が必要→規約に直撃
-表示 is ちょろい
-
-=end

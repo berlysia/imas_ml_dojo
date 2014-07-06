@@ -13,7 +13,7 @@ Vue.directive 'check-current-key', (value)->
   else
     @el.parentNode.classList.remove('disabled')
 
-$ ->
+vm = $ ->
   content: new Vue
     el: "#content"
     paramAttributes: ['page','each_page_length','level_bound','value_bound','order']
@@ -63,7 +63,7 @@ $ ->
       onPagenatorClick: (idx,evt,toTop) ->
         evt.preventDefault()
         @listPagenation(idx)
-        window.history.pushState('','',"/list?page=#{idx}")
+        # window.history.pushState("page=#{idx}",'',"/list?page=#{idx}")
         $('body').animate({scrollTop:0},0) if toTop
     created: ->
       @$data.page = parseInt(@page)
@@ -73,3 +73,13 @@ $ ->
         @updatePagenator(@$data.page)
         @fetchDojos(@$data.page)
       .fail (xhr,stat,err) ->
+
+# TODO fixme
+# $(window).on 'popstate', (evt)->
+#   console.log "popstate!!",evt.originalEvent.state
+#   return unless evt.originalEvent.state
+#   p = location.search.substr(1).split('&').filter((s)->s.split("=")[0]=="page")
+#   idx = null
+#   idx = if p then parseInt(p[0].split("=")[1]) else 0
+#   console.log("pop: #{idx} ",$(".pagenator-#{idx}"))
+#   $(".pagenator-#{idx} a")[0].click() # <- ここでlistPagenation(idx)したかった

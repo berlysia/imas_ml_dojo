@@ -1,1 +1,5 @@
 vendor/
+*.dump
+.DS_Store
+*.log
+.ruby-version

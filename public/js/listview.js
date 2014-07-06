@@ -16,7 +16,6 @@ Dojo = (function() {
 })();
 
 Vue.directive('check-current-key', function(value) {
-  console.log("v:" + value);
   if (value[0] === value[1]) {
     return this.el.parentNode.classList.add('disabled');
   } else {
@@ -57,7 +56,9 @@ $(function() {
               });
               return _this.$data.loading = false;
             };
-          })(this));
+          })(this)).fail(function(xhr, stat, err) {
+            return this.$data.loading = false;
+          });
         },
         listPagenation: function(idx) {
           if (parseInt(idx) === this.$data.page) {
@@ -88,10 +89,15 @@ $(function() {
           }
           return this.$data.pagenator = pagenator;
         },
-        onPagenatorClick: function(idx, evt) {
+        onPagenatorClick: function(idx, evt, toTop) {
           evt.preventDefault();
           this.listPagenation(idx);
-          return window.history.pushState('', '', "/list?page=" + idx);
+          window.history.pushState('', '', "/list?page=" + idx);
+          if (toTop) {
+            return $('body').animate({
+              scrollTop: 0
+            }, 0);
+          }
         }
       },
       created: function() {
@@ -104,7 +110,7 @@ $(function() {
             _this.updatePagenator(_this.$data.page);
             return _this.fetchDojos(_this.$data.page);
           };
-        })(this));
+        })(this)).fail(function(xhr, stat, err) {});
       }
     })
   };

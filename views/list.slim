@@ -44,10 +44,10 @@
   div.text-center v-show="0 < each_page_length"
     ul.pagination.pagination-lg
       li
-        a href="#top" v-on="click:onPagenatorClick(0)" &laquo;
+        a href="/list?page=0" v-on="click:onPagenatorClick(0,$event,true)" v-check-current-key="[0,page]" &laquo;
       li v-repeat="pagenator" class="pagenator-{{$value}}"
-        a href="#top" v-on="click:onPagenatorClick($value)" {{$value}}
+        a href="/list?page={{$value}}" v-on="click:onPagenatorClick($value,$event,true)" v-check-current-key="[$value,page]" {{$value}}
       li
-        a href="#top" v-on="click:onPagenatorClick(page_max)" &raquo;
+        a href="/list?page={{page_max}}" v-on="click:onPagenatorClick(page_max,$event,true)" v-check-current-key="[page_max,page]" &raquo;
 
 script src="/js/listview.js"

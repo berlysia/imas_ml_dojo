@@ -102,7 +102,7 @@ get '/api/getdojos/?' do
     if params[:page_max]
       json tmp.size/length
     elsif (params[:order]||"").upcase === "ASC"
-      json tmp[(-offset-(length*(page+1)))..(-offset-length*page-1)]
+      json tmp.reverse[(offset+length*page)...(offset+length*(page+1))]
     else
       json tmp[(offset+length*page)...(offset+length*(page+1))]
     end

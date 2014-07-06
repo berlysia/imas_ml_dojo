@@ -1,1 +1,5 @@
-vendor/
+.bundle/
+.ruby-version
+*.dump
+*.log
+.DS_Store

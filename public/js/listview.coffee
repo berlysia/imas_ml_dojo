@@ -8,7 +8,6 @@ class Dojo
     @comment = dojo.comment
 
 Vue.directive 'check-current-key', (value)->
-  console.log "v:#{value}"
   if value[0] == value[1]
     @el.parentNode.classList.add('disabled')
   else
@@ -36,6 +35,8 @@ $ ->
         $.getJSON url, (dojos) =>
           @$data.dojos = dojos.map((dojo)->new Dojo(dojo))
           @$data.loading = false
+        .fail (xhr,stat,err) ->
+          @$data.loading = false
       listPagenation: (idx) ->
         return if parseInt(idx) == @$data.page
         @$data.page = parseInt(idx)
@@ -59,10 +60,11 @@ $ ->
         for i in [0...@pg_size]
           pagenator.push @pg_from+i
         @$data.pagenator = pagenator
-      onPagenatorClick: (idx,evt) ->
+      onPagenatorClick: (idx,evt,toTop) ->
         evt.preventDefault()
         @listPagenation(idx)
         window.history.pushState('','',"/list?page=#{idx}")
+        $('body').animate({scrollTop:0},0) if toTop
     created: ->
       @$data.page = parseInt(@page)
       url = "/api/getdojos?offset=0&length=#{@each_page_length}&level_bound=#{@level_bound}&value_bound=#{@value_bound}&order=#{@order}&page_max=true"
@@ -70,3 +72,4 @@ $ ->
         @$data.page_max = parseInt(page_max)
         @updatePagenator(@$data.page)
         @fetchDojos(@$data.page)
+      .fail (xhr,stat,err) ->

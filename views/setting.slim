@@ -3,17 +3,17 @@
 #content
   form.form-horizontal action='/setting' method='post'
     .form-group
-      label.col-sm-4.control-label for='levelborder' レベル下限（0でリセット）
+      label.col-sm-4.control-label for='level_bound' レベル下限
       .col-sm-6
-        input.form-control type='number' name='levelborder' id='levelborder' value="#{@levelborder}"
+        input.form-control type='number' name='level_bound' id='level_bound' value="#{@level_bound}"
     .form-group
-      label.col-sm-4.control-label for='valueborder' 発揮値上限（0でリセット）
+      label.col-sm-4.control-label for='value_bound' 発揮値上限
       .col-sm-6
-        input.form-control type='number' name='valueborder' id='valueborder' value="#{@valueborder}"
+        input.form-control type='number' name='value_bound' id='value_bound' value="#{@value_bound}"
     .form-group
-      label.col-sm-4.control-label for='showcount' 表示数（0でリセット）
+      label.col-sm-4.control-label for='each_page_length' 一括表示件数（一覧ページ）
       .col-sm-6
-        input.form-control type='number' name='showcount' id='showcount' value="#{@showcount}"
+        input.form-control type='number' name='each_page_length' id='each_page_length' value="#{@each_page_length}"
     .form-group#setting-target
       label.col-sm-4.control-label for='target' 表示先指定
       .col-sm-6
@@ -34,15 +34,11 @@
       .col-sm-6
         .radio
           label
-            input type='radio' name='sort[]' id='random' value="random"
-            = 'シャッフル（デフォルト）'
+            input type='radio' name='sort[]' id='descend' value="desc"
+            = '降順、大きい順（デフォルト）'
         .radio
           label
-            input type='radio' name='sort[]' id='descend' value="descend"
-            = '降順、大きい順'
-        .radio
-          label
-            input type='radio' name='sort[]' id='ascend' value="ascend"
+            input type='radio' name='sort[]' id='ascend' value="asc"
             = '昇順、小さい順'
     .form-group
       .col-sm-offset-4.col-sm-3
@@ -58,31 +54,34 @@
   javascript:
 
     (function(){
-      if(document.cookie){
-        var target = '';
-        var sort = '';
-        var cookies = document.cookie.split('; ');
-        for(var i = cookies.length - 1; i >= 0; i--){
-          var cookieHash = cookies[i].split('=');
-          if(cookieHash[0] == 'target') target = cookieHash[1];
-          if(cookieHash[0] == 'sort') sort = cookieHash[1];
-        }
+      var target, sort;
+      var cookies = document.cookie.split('; ');
+      for(var i = cookies.length - 1; i >= 0; i--){
+        var cookieHash = cookies[i].split('=');
+        if(cookieHash[0] == 'target') target = cookieHash[1];
+        if(cookieHash[0] == 'sort') sort = cookieHash[1];
+      }
 
+      if(typeof target !== "undefined"){
         var targetRadio = document.querySelector('#setting-target input[type="radio"][value="'+target+'"]');
         if(targetRadio){
           targetRadio.checked = true;
         }else{
           document.querySelector('#setting-target input[type="radio"][value="unique"]').checked = true;
         }
+      }else
+        document.querySelector('#setting-target input[type="radio"][value="unique"]').checked = true;
 
+      if(typeof sort !== "undefined"){
         var sortRadio = document.querySelector('#setting-sort input[type="radio"][value="'+sort+'"]');
         if(sortRadio){
           sortRadio.checked = true;
         }else{
-          document.querySelector('#setting-sort input[type="radio"][value="random"]').checked = true;
+          document.querySelector('#setting-sort input[type="radio"][value="desc"]').checked = true;
         }
+      }else
+        document.querySelector('#setting-sort input[type="radio"][value="desc"]').checked = true;
 
-      }
     })();
 
     var resetStorage = function(){

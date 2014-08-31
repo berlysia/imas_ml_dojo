@@ -8,6 +8,7 @@ html
     link href="/css/main.css" rel="stylesheet"
     script src="/js/jquery-2.0.3.min.js"
     script src="/js/bootstrap.min.js"
+    script src="/js/vue.min.js"
   body
     .container
       nav.navbar.navbar-default.navbar-fixed-top role='navigation'
@@ -32,4 +33,9 @@ html
           / ul.nav.navbar-nav.navbar-right
           /   li
           /     a href='/id_check' 編集/追加
+
       == yield
+
+      footer
+        address
+          p = "(o・∇・o)"

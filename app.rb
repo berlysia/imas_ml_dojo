@@ -3,6 +3,7 @@
 
 require 'nkf'
 require "sinatra/json"
+require 'sinatra/cross_origin'
 set :slim, :pretty => true
 
 configure do
@@ -61,6 +62,7 @@ end
 
 # cache 1 hour
 $cache = Cache.new
+puts "cache initialization"
 $cache.set('dojos', Dojo.order('level desc'), 3600)
 
 error 403 do
@@ -161,6 +163,7 @@ get '/sapi/update' do
 end
 
 post '/sapi/update' do
+  cross_origin :allow_origin => 'http://imas.gree-apps.net'
   if params['adminkey'] != ADMINKEY
     403
   elsif params['delete'].nil?

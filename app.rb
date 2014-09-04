@@ -62,7 +62,6 @@ end
 
 # cache 1 hour
 $cache = Cache.new
-puts "cache initialization"
 $cache.set('dojos', Dojo.order('level desc'), 3600)
 
 error 403 do

@@ -278,8 +278,10 @@ get '/next' do
     begin
       position += 1
 
-      if dojos.size <= position || level_bound < dojos[position].level || value_bound < dojos[position].dispvalue
+      if dojos.size <= position
         position = -1
+      elsif level_bound < dojos[position].level || value_bound < dojos[position].dispvalue
+        position += 1
       else
         dojo_valid = true
       end

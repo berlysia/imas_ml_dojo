@@ -264,6 +264,31 @@ get '/list' do
   slim :list
 end
 
+get '/next' do
+  if !request.referer.nil? && request.referer.match request.base_url
+    slim :next_guide
+  else
+    level_bound, value_bound = %w{level_bound value_bound}.map do |k|
+      request.cookies.has_key?(k) ? request.cookies[k].to_i : DEFAULT_VALUE[k.upcase]
+    end
+    position = request.cookies.has_key?("position") ? request.cookies["position"] : -1
+    dojos = $cache.get("dojos")
+
+    dojo_valid = false
+    begin
+      position += 1
+
+      if dojos.size <= position || level_bound < dojos[position].level || value_bound < dojos[position].dispvalue
+        position = -1
+      else
+        dojo_valid = true
+      end
+    end until dojo_valid
+
+    redirect "http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojos[position].userid}/"
+  end
+end
+
 get '/' do
   @level_bound, @value_bound, @each_page_length = %w{level_bound value_bound each_page_length}.map do |k|
     request.cookies.has_key?(k) ? request.cookies[k].to_i : DEFAULT_VALUE[k.upcase]

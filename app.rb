@@ -265,7 +265,7 @@ get '/list' do
 end
 
 get '/next' do
-  if !request.referer.nil? && request.referer.match request.base_url
+  if ( !(request.referer.nil?) && request.referer.match(request.base_url) )
     slim :next_guide
   else
     level_bound, value_bound = %w{level_bound value_bound}.map do |k|

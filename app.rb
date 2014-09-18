@@ -294,7 +294,7 @@ get '/next' do
 
     response.set_cookie("position", {:value => position, :max_age => '2592000'})
 
-    redirect "http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojos[position].userid}/"
+    redirect "http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojos[position].userid}/"
   end
 end
 

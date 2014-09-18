@@ -279,7 +279,6 @@ get '/next' do
       position += 1
       if position == init_position
         @not_found = true
-        slim :next_guide
         break
       end
 
@@ -294,7 +293,11 @@ get '/next' do
 
     response.set_cookie("position", {:value => position, :max_age => '2592000'})
 
-    redirect "http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojos[position].userid}/"
+    unless @not_found
+      redirect "http://imas.gree-apps.net/app/index.php/mypage/user_profile/id/#{dojos[position].userid}/"
+    else
+      slim :next_guide
+    end
   end
 end
 

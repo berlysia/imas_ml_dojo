@@ -271,21 +271,28 @@ get '/next' do
     level_bound, value_bound = %w{level_bound value_bound}.map do |k|
       request.cookies.has_key?(k) ? request.cookies[k].to_i : DEFAULT_VALUE[k.upcase]
     end
-    position = request.cookies.has_key?("position") ? request.cookies["position"] : -1
+    position = request.cookies.has_key?("position") ? request.cookies["position"].to_i : -1
+    init_position = position
     dojos = $cache.get("dojos")
 
-    dojo_valid = false
-    begin
+    loop do
       position += 1
+      if position == init_position
+        @not_found = true
+        slim :next_guide
+        break
+      end
 
       if dojos.size <= position
         position = -1
-      elsif level_bound < dojos[position].level || value_bound < dojos[position].dispvalue
+      elsif dojos[position].level < level_bound || value_bound < dojos[position].dispvalue
         position += 1
       else
-        dojo_valid = true
+        break
       end
-    end until dojo_valid
+    end
+
+    response.set_cookie("position", {:value => position, :max_age => '2592000'})
 
     redirect "http://imas.gree-apps.net/app/index.php/auditionbattle/confirm/enemy_id/#{dojos[position].userid}/"
   end
